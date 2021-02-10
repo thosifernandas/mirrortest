@@ -1,0 +1,41 @@
+---
+- name: "Mirror a Git repository with Ansible"
+  hosts: localhost
+  vars:
+    git_dir: /tmp/soso.git
+
+  tasks:
+
+  - name: "Clone the Git repo"
+    git:
+       repo: 'https://github.com/ozkl/soso.git'
+       dest: '{{ git_dir }}'
+       clone: yes
+       update: yes
+
+  - name: "Add alternate remote"
+    ini_file: dest={{ git_dir }}/.git/config section='remote \"mirrored\"' option=url value='git@gitlab.com:example/soso-mirror.git'
+    tags: configuration
+ 
+  - name: "Push the repo to alternate remote"
+    shell: 'git --verbose --git-dir={{ git_dir }}/.git push mirrored HEAD'
+
+
+
+Below is pull mean, clone a repo. 
+===================================== 
+
+
+---
+- name: "Mirror a Git repo with Ansible"
+  hosts: localhost
+  vars:
+    git_dir: /tmp/soso.git
+  tasks:
+
+  - name: "Clone the git repo"
+    git:
+       repo: 'https://github.com/ozkl/soso.git'
+       dest: '{{ git_dir }}'
+       clone: yes
+       update: yes
